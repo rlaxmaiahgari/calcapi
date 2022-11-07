@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="c492efbe-8589-4207-9743-eb66934e4482" >
+		<http:listener-connection host="0.0.0.0" port="8080" />
+	</http:listener-config>
+	<flow name="calcapiFlow" doc:id="6636d76b-5c5e-4fd9-ade8-598542302070" >
+		<http:listener doc:name="Listener" doc:id="97301939-439a-4e0f-a7bf-b100633ccfd4" config-ref="HTTP_Listener_config1" path="/calc"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d354f862-426b-4dbc-9428-1a6c7c0935df" message='#[%dw 2.0&#10;output application/json&#10;---&#10;&#10;"sub": attributes.queryParams.fname - attributes.queryParams.lname]'/>
+		<ee:transform doc:name="Transform Message" doc:id="9302ffc8-2dcb-493b-b4e4-af0eecd74b8e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"sub": attributes.queryParams.fname - attributes.queryParams.lname]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="b1e3e1a5-994b-42ea-91e9-eed88db6487b" />
+	</flow>
+</mule>
